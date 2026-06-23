@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "AmazFlash — Ofertas Amazon",
   "short_name": "AmazFlash",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Las mejores ofertas verificadas de AmazFlash en tu navegador. Filtra por nicho y abre chollos con un clic.",
   "action": {
     "default_title": "AmazFlash — Ofertas",
@@ -18,7 +18,12 @@
     "open_in_tab": true
   },
   "permissions": ["storage"],
-  "host_permissions": ["https://amazflash.com/*"],
+  "host_permissions": [
+    "https://amazflash.com/*",
+    "https://images-eu.ssl-images-amazon.com/*",
+    "https://images-na.ssl-images-amazon.com/*",
+    "https://m.media-amazon.com/*"
+  ],
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
