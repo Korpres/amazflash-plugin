@@ -16,7 +16,7 @@ Extensión de navegador que muestra las **mejores ofertas verificadas de AmazFla
 
 ## Instalación en desarrollo
 
-1. Generar iconos (solo la primera vez):
+1. Los iconos ya están en `icons/` (generados desde `icons/icon-source.png`). Para regenerarlos:
 
    ```bash
    python3 scripts/generate_icons.py
