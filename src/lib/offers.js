@@ -91,6 +91,9 @@ export function imageUrl(offer, siteOrigin = 'https://amazflash.com') {
   return `${siteOrigin}${img.startsWith('/') ? '' : '/'}${img}`;
 }
 
+export const PLUGIN_CLICK_F = 'p';
+export const PLUGIN_CLICK_FROM = 'amazflash-plugin';
+
 export function offerClickUrl(offer, affiliateTag = 'amazflash0e-21') {
   let url =
     (offer.url ?? '').trim() ||
@@ -100,8 +103,8 @@ export function offerClickUrl(offer, affiliateTag = 'amazflash0e-21') {
 
   try {
     const u = new URL(url);
-    u.searchParams.set('f', 'e');
-    u.searchParams.set('from', 'amazflash-extension');
+    u.searchParams.set('f', PLUGIN_CLICK_F);
+    u.searchParams.set('from', PLUGIN_CLICK_FROM);
     return u.toString();
   } catch {
     return url;

@@ -7,7 +7,7 @@ Extensión de navegador que muestra las **mejores ofertas verificadas de AmazFla
 - **Popup**: últimas ofertas según tus nichos (5 iniciales + «Cargar más» de 5 en 5)
 - **Recargar**: vuelve a descargar el feed JSON desde amazflash.com
 - **Opciones**: activar/desactivar nichos (tecnología, gaming, hogar, moda, etc.)
-- **Enlaces**: clics trackeados con `?f=e&from=amazflash-extension` en URLs amazflash.com
+- **Enlaces**: clics trackeados con `?f=p&from=amazflash-plugin` en URLs amazflash.com
 
 ## Requisitos
 
