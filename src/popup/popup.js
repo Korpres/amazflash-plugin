@@ -71,8 +71,8 @@ function renderList() {
           <span class="niche-tag">${escapeHtml(o._nicheName || '')}</span>
         </div>
       </div>
-    </a>`,
-    )
+    </a>`;
+    })
     .join('');
 
   const hasMore = start + PAGE_SIZE < filtered.length;
