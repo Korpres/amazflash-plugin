@@ -46,12 +46,11 @@ export function offerMatchesNiche(offer, niche) {
 }
 
 function sortOffers(a, b) {
-  const aDisc = (a.discount_pct ?? 0) > 0 ? 1 : 0;
-  const bDisc = (b.discount_pct ?? 0) > 0 ? 1 : 0;
-  if (bDisc !== aDisc) return bDisc - aDisc;
+  const byDate = (b.published_at ?? '').localeCompare(a.published_at ?? '');
+  if (byDate !== 0) return byDate;
   const byDiscount = (b.discount_pct ?? 0) - (a.discount_pct ?? 0);
   if (byDiscount !== 0) return byDiscount;
-  return (b.published_at ?? '').localeCompare(a.published_at ?? '');
+  return (a.asin ?? '').localeCompare(b.asin ?? '');
 }
 
 /** Ofertas Amazon filtradas por slugs de nicho seleccionados. */
@@ -90,21 +89,38 @@ export function amazonImageUrl(asin) {
   return `https://images-eu.ssl-images-amazon.com/images/P/${a}.01._SL300_.jpg`;
 }
 
-/** Imagen del producto (CDN Amazon; fiable aunque falte /ofertas/ en el VPS). */
-export function imageUrl(offer, siteOrigin = 'https://amazflash.com') {
-  const amazon = amazonImageUrl(offer.asin);
-  if (amazon) return amazon;
+/** URLs de imagen en orden de preferencia (rehost del sitio primero). */
+export function imageCandidates(offer, siteOrigin = 'https://amazflash.com') {
+  const out = [];
+  const push = (url) => {
+    const u = (url ?? '').trim();
+    if (u && !out.includes(u)) out.push(u);
+  };
+
   const img = (offer.image ?? '').trim();
-  if (img.startsWith('http')) return img;
-  if (img) return `${siteOrigin}${img.startsWith('/') ? '' : '/'}${img}`;
-  return '';
+  if (img.startsWith('http')) push(img);
+  else if (img) push(`${siteOrigin}${img.startsWith('/') ? '' : '/'}${img}`);
+
+  const asin = (offer.asin ?? '').trim().toUpperCase();
+  if (AMAZON_ASIN_RE.test(asin)) {
+    push(`https://images-eu.ssl-images-amazon.com/images/P/${asin}.01._SL500_.jpg`);
+    push(`https://m.media-amazon.com/images/P/${asin}.01._SL500_.jpg`);
+    push(`https://images-na.ssl-images-amazon.com/images/P/${asin}.01._SLMAIN_.jpg`);
+    push(amazonImageUrl(asin));
+  }
+
+  return out;
 }
 
-/** Reserva: otra URL del feed si la CDN falla. */
+/** Imagen principal del producto. */
+export function imageUrl(offer, siteOrigin = 'https://amazflash.com') {
+  return imageCandidates(offer, siteOrigin)[0] || '';
+}
+
+/** @deprecated Usar imageCandidates; mantenido por compatibilidad. */
 export function imageFallbackUrl(offer, siteOrigin = 'https://amazflash.com') {
-  const img = (offer.image ?? '').trim();
-  if (!img || img.startsWith('http')) return img || '';
-  return `${siteOrigin}${img.startsWith('/') ? '' : '/'}${img}`;
+  const candidates = imageCandidates(offer, siteOrigin);
+  return candidates[1] || '';
 }
 
 export const PLUGIN_CLICK_F = 'p';

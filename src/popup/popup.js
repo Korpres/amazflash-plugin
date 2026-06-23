@@ -2,8 +2,7 @@ import { fetchOffers, formatGeneratedAt } from '../lib/api.js';
 import {
   filterOffersForNiches,
   formatPrice,
-  imageFallbackUrl,
-  imageUrl,
+  imageCandidates,
   offerClickUrl,
 } from '../lib/offers.js';
 import { getSettings, PAGE_SIZE } from '../lib/storage.js';
@@ -13,12 +12,18 @@ const metaEl = document.getElementById('meta');
 const reloadBtn = document.getElementById('reload');
 const loadMoreBtn = document.getElementById('load-more');
 const optionsLink = document.getElementById('open-options');
+const prefsLink = document.getElementById('prefs-link');
 
 let filtered = [];
 let pageIndex = 0;
 let loading = false;
 
 optionsLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  chrome.runtime.openOptionsPage();
+});
+
+prefsLink?.addEventListener('click', (e) => {
   e.preventDefault();
   chrome.runtime.openOptionsPage();
 });
@@ -53,17 +58,18 @@ function renderList() {
 
   listEl.innerHTML = slice
     .map((o) => {
-      const src = imageUrl(o);
-      const fb = imageFallbackUrl(o);
-      const fbAttr =
-        fb && fb !== src ? ` data-fallback="${escapeAttr(fb)}"` : '';
+      const candidates = imageCandidates(o);
+      const candidatesAttr = escapeAttr(JSON.stringify(candidates));
       return `
-    <a class="offer" href="${escapeAttr(offerClickUrl(o))}" target="_blank" rel="noopener">
-      <img src="${escapeAttr(src)}"${fbAttr} alt="" loading="lazy" onerror="if(this.dataset.fallback&&!this.dataset.fb){this.dataset.fb=1;this.src=this.dataset.fallback}" />
+    <a class="offer" href="${escapeAttr(offerClickUrl(o))}" target="_blank" rel="noopener sponsored nofollow">
+      <div class="offer-thumb">
+        <img src="${escapeAttr(candidates[0] || '')}" data-candidates="${candidatesAttr}" alt="" loading="lazy" />
+      </div>
       <div class="offer-body">
+        ${o.published_at ? `<p class="offer-kicker">Detectada ${escapeHtml(formatPublishedAgo(o.published_at))}</p>` : ''}
         <p class="offer-title">${escapeHtml(o.title || o.asin)}</p>
         <div class="offer-meta">
-          ${o.discount_pct ? `<span class="badge">−${o.discount_pct}%</span>` : ''}
+          ${o.discount_pct ? `<span class="badge-hot">−${o.discount_pct}%</span>` : ''}
           ${o.price != null ? `<span class="price">${formatPrice(o.price)}</span>` : ''}
           ${o.list_price != null && o.list_price > (o.price ?? 0)
             ? `<span class="price-old">${formatPrice(o.list_price)}</span>`
@@ -74,6 +80,8 @@ function renderList() {
     </a>`;
     })
     .join('');
+
+  bindOfferImages(listEl);
 
   const hasMore = start + PAGE_SIZE < filtered.length;
   loadMoreBtn.hidden = !hasMore;
@@ -112,6 +120,55 @@ async function loadOffers(force = false) {
     loading = false;
     reloadBtn.disabled = false;
     loadMoreBtn.disabled = false;
+  }
+}
+
+function bindOfferImages(container) {
+  container.querySelectorAll('img[data-candidates]').forEach((img) => {
+    let candidates;
+    try {
+      candidates = JSON.parse(img.dataset.candidates || '[]');
+    } catch {
+      candidates = img.src ? [img.src] : [];
+    }
+    let idx = 0;
+
+    const markEmpty = () => {
+      img.removeAttribute('src');
+      img.closest('.offer-thumb')?.classList.add('offer-thumb--empty');
+    };
+
+    const tryNext = () => {
+      idx += 1;
+      if (idx < candidates.length) {
+        img.src = candidates[idx];
+      } else {
+        markEmpty();
+      }
+    };
+
+    const validateLoaded = () => {
+      if (img.naturalWidth <= 8 || img.naturalHeight <= 8) tryNext();
+    };
+
+    img.addEventListener('error', tryNext);
+    img.addEventListener('load', validateLoaded);
+    if (img.complete) validateLoaded();
+  });
+}
+
+function formatPublishedAgo(iso) {
+  if (!iso) return '';
+  try {
+    const diff = Date.now() - new Date(iso).getTime();
+    if (!Number.isFinite(diff) || diff < 0) return '';
+    const hours = Math.floor(diff / 3600000);
+    if (hours < 1) return 'hace un momento';
+    if (hours < 24) return `hace ${hours} h`;
+    const days = Math.floor(hours / 24);
+    return `hace ${days} d`;
+  } catch {
+    return '';
   }
 }
 

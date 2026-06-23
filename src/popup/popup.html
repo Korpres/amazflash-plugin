@@ -9,9 +9,12 @@
   <body>
     <header class="header">
       <div class="brand">
-        <img src="../../icons/icon48.png" alt="" width="28" height="28" />
+        <a href="https://amazflash.com/" target="_blank" rel="noopener" class="brand-link" title="amazflash.com">
+          <img src="../../icons/icon48.png" alt="" width="32" height="32" class="brand-logo" />
+        </a>
         <div>
           <h1>AmazFlash</h1>
+          <p class="brand-tag">Ofertas curadas por IA</p>
           <p id="meta" class="meta">Cargando…</p>
         </div>
       </div>
@@ -23,16 +26,32 @@
 
     <main id="list" class="list" aria-live="polite"></main>
 
+    <p class="prefs-hint">
+      ¿No te encaja lo que ves?
+      <a href="#" id="prefs-link">Personaliza tus nichos</a>
+      en la configuración del plugin.
+    </p>
+
     <footer class="footer">
       <button type="button" id="load-more" class="btn btn-primary" hidden>Cargar más</button>
-      <a
-        href="https://t.me/amazflash"
-        target="_blank"
-        rel="noopener"
-        class="link-telegram"
-      >
-        Únete al canal de Telegram →
-      </a>
+      <div class="footer-links">
+        <a
+          href="https://amazflash.com/ofertas-flash-amazon/"
+          target="_blank"
+          rel="noopener"
+          class="link-secondary"
+        >
+          amazflash.com →
+        </a>
+        <a
+          href="https://t.me/amazflash"
+          target="_blank"
+          rel="noopener"
+          class="link-telegram"
+        >
+          Telegram →
+        </a>
+      </div>
     </footer>
 
     <script type="module" src="popup.js"></script>
