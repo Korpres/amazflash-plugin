@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AmazFlash — Configuración</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <img src="../../icons/icon48.png" alt="" width="40" height="40" />
+        <div>
+          <h1>AmazFlash — Configuración</h1>
+          <p>Elige los nichos que quieres ver en el popup de la extensión.</p>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="toolbar">
+          <button type="button" id="select-all" class="btn">Seleccionar todos</button>
+          <button type="button" id="select-none" class="btn">Ninguno</button>
+          <button type="button" id="select-default" class="btn">Por defecto</button>
+        </div>
+        <div id="niche-grid" class="grid"></div>
+      </section>
+
+      <section class="panel">
+        <label for="feed-url">URL del feed JSON</label>
+        <input type="url" id="feed-url" placeholder="https://amazflash.com/offers-feed.json" />
+        <p class="hint">Feed público generado por el pipeline AmazFlash (<code>offers-feed.json</code>).</p>
+      </section>
+
+      <p id="status" class="status" role="status"></p>
+
+      <footer>
+        <a href="https://amazflash.com/" target="_blank" rel="noopener">amazflash.com</a>
+        ·
+        <a href="https://t.me/amazflash" target="_blank" rel="noopener">Telegram @amazflash</a>
+      </footer>
+    </div>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

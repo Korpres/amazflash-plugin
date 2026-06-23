@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AmazFlash</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="brand">
+        <img src="../../icons/icon48.png" alt="" width="28" height="28" />
+        <div>
+          <h1>AmazFlash</h1>
+          <p id="meta" class="meta">Cargando…</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button type="button" id="reload" class="btn btn-ghost" title="Recargar ofertas">↻</button>
+        <a href="#" id="open-options" class="btn btn-ghost" title="Configuración">⚙</a>
+      </div>
+    </header>
+
+    <main id="list" class="list" aria-live="polite"></main>
+
+    <footer class="footer">
+      <button type="button" id="load-more" class="btn btn-primary" hidden>Cargar más</button>
+      <a href="https://amazflash.com/ofertas-flash-amazon/" target="_blank" rel="noopener" class="link-more">
+        Ver todas en amazflash.com →
+      </a>
+    </footer>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
