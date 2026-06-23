@@ -1,7 +1,7 @@
 import { DEFAULT_NICHES } from './niches.js';
 
 export const DEFAULT_FEED_URL = 'https://amazflash.com/offers-feed.json';
-export const PAGE_SIZE = 5;
+export const PAGE_SIZE = 4;
 
 const DEFAULTS = {
   selectedNiches: DEFAULT_NICHES,

@@ -14,7 +14,7 @@ const loadMoreBtn = document.getElementById('load-more');
 const optionsLink = document.getElementById('open-options');
 
 let filtered = [];
-let visibleCount = 0;
+let pageIndex = 0;
 let loading = false;
 
 optionsLink.addEventListener('click', (e) => {
@@ -24,7 +24,9 @@ optionsLink.addEventListener('click', (e) => {
 
 reloadBtn.addEventListener('click', () => loadOffers(true));
 loadMoreBtn.addEventListener('click', () => {
-  visibleCount += PAGE_SIZE;
+  const nextStart = (pageIndex + 1) * PAGE_SIZE;
+  if (nextStart >= filtered.length) return;
+  pageIndex += 1;
   renderList();
 });
 
@@ -45,7 +47,9 @@ function renderList() {
     return;
   }
 
-  const slice = filtered.slice(0, visibleCount);
+  const start = pageIndex * PAGE_SIZE;
+  const slice = filtered.slice(start, start + PAGE_SIZE);
+
   listEl.innerHTML = slice
     .map(
       (o) => `
@@ -66,11 +70,9 @@ function renderList() {
     )
     .join('');
 
-  loadMoreBtn.hidden = visibleCount >= filtered.length;
-  loadMoreBtn.textContent =
-    visibleCount >= filtered.length
-      ? 'No hay más'
-      : `Cargar más (${Math.min(PAGE_SIZE, filtered.length - visibleCount)} más)`;
+  const hasMore = start + PAGE_SIZE < filtered.length;
+  loadMoreBtn.hidden = !hasMore;
+  loadMoreBtn.textContent = 'Cargar más';
 }
 
 async function loadOffers(force = false) {
@@ -84,7 +86,7 @@ async function loadOffers(force = false) {
     const settings = await getSettings();
     const { generatedAt, offers } = await fetchOffers(settings.feedUrl);
     filtered = filterOffersForNiches(offers, settings.selectedNiches);
-    visibleCount = PAGE_SIZE;
+    pageIndex = 0;
 
     const nichesLabel =
       settings.selectedNiches.length === 1
