@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "AmazFlash — Ofertas Amazon",
   "short_name": "AmazFlash",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Las mejores ofertas verificadas de AmazFlash en tu navegador. Filtra por nicho y abre chollos con un clic.",
   "action": {
     "default_title": "AmazFlash — Ofertas",
