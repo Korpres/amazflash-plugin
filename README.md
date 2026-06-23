@@ -29,7 +29,7 @@ Extensión de navegador que muestra las **mejores ofertas verificadas de AmazFla
 
 Clic derecho en el icono → **Opciones**, o botón ⚙ en el popup.
 
-Por defecto están activos: generales, tecnología, gaming PC, PS5, Switch y hogar.
+Por defecto están activos **todos los nichos** (17 categorías).
 
 ## Estructura
 

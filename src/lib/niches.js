@@ -149,11 +149,5 @@ export const NICHES = [
 
 export const NICHES_BY_SLUG = Object.fromEntries(NICHES.map((n) => [n.slug, n]));
 
-export const DEFAULT_NICHES = [
-  'generales',
-  'tecnologia',
-  'gaming-pc',
-  'juegos-ps5',
-  'nintendo-switch',
-  'hogar',
-];
+/** Todos los nichos activos por defecto (primera instalación). */
+export const DEFAULT_NICHES = NICHES.map((n) => n.slug);
