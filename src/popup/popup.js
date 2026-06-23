@@ -30,9 +30,13 @@ prefsLink?.addEventListener('click', (e) => {
 
 reloadBtn.addEventListener('click', () => loadOffers(true));
 loadMoreBtn.addEventListener('click', () => {
-  const nextStart = (pageIndex + 1) * PAGE_SIZE;
-  if (nextStart >= filtered.length) return;
-  pageIndex += 1;
+  if (filtered.length === 0) return;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  if (pageIndex + 1 >= totalPages) {
+    pageIndex = 0;
+  } else {
+    pageIndex += 1;
+  }
   renderList();
 });
 
@@ -83,9 +87,15 @@ function renderList() {
 
   bindOfferImages(listEl);
 
-  const hasMore = start + PAGE_SIZE < filtered.length;
-  loadMoreBtn.hidden = !hasMore;
-  loadMoreBtn.textContent = 'Cargar más';
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const onLastPage = pageIndex >= totalPages - 1;
+  loadMoreBtn.hidden = filtered.length === 0;
+  loadMoreBtn.textContent =
+    filtered.length <= PAGE_SIZE
+      ? 'Ver de nuevo'
+      : onLastPage
+        ? 'Empezar de nuevo'
+        : 'Cargar más';
 }
 
 async function loadOffers(force = false) {
