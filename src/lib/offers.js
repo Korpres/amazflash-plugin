@@ -84,10 +84,26 @@ export function formatPrice(value) {
   return `${Number(value).toFixed(2).replace('.', ',')} €`;
 }
 
+export function amazonImageUrl(asin) {
+  const a = (asin ?? '').trim().toUpperCase();
+  if (!AMAZON_ASIN_RE.test(a)) return '';
+  return `https://images-eu.ssl-images-amazon.com/images/P/${a}.01._SL300_.jpg`;
+}
+
+/** Imagen del producto (CDN Amazon; fiable aunque falte /ofertas/ en el VPS). */
 export function imageUrl(offer, siteOrigin = 'https://amazflash.com') {
+  const amazon = amazonImageUrl(offer.asin);
+  if (amazon) return amazon;
   const img = (offer.image ?? '').trim();
-  if (!img) return '';
   if (img.startsWith('http')) return img;
+  if (img) return `${siteOrigin}${img.startsWith('/') ? '' : '/'}${img}`;
+  return '';
+}
+
+/** Reserva: otra URL del feed si la CDN falla. */
+export function imageFallbackUrl(offer, siteOrigin = 'https://amazflash.com') {
+  const img = (offer.image ?? '').trim();
+  if (!img || img.startsWith('http')) return img || '';
   return `${siteOrigin}${img.startsWith('/') ? '' : '/'}${img}`;
 }
 

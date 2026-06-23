@@ -2,6 +2,7 @@ import { fetchOffers, formatGeneratedAt } from '../lib/api.js';
 import {
   filterOffersForNiches,
   formatPrice,
+  imageFallbackUrl,
   imageUrl,
   offerClickUrl,
 } from '../lib/offers.js';
@@ -51,10 +52,14 @@ function renderList() {
   const slice = filtered.slice(start, start + PAGE_SIZE);
 
   listEl.innerHTML = slice
-    .map(
-      (o) => `
+    .map((o) => {
+      const src = imageUrl(o);
+      const fb = imageFallbackUrl(o);
+      const fbAttr =
+        fb && fb !== src ? ` data-fallback="${escapeAttr(fb)}"` : '';
+      return `
     <a class="offer" href="${escapeAttr(offerClickUrl(o))}" target="_blank" rel="noopener">
-      <img src="${escapeAttr(imageUrl(o))}" alt="" loading="lazy" onerror="this.style.visibility='hidden'" />
+      <img src="${escapeAttr(src)}"${fbAttr} alt="" loading="lazy" onerror="if(this.dataset.fallback&&!this.dataset.fb){this.dataset.fb=1;this.src=this.dataset.fallback}" />
       <div class="offer-body">
         <p class="offer-title">${escapeHtml(o.title || o.asin)}</p>
         <div class="offer-meta">
